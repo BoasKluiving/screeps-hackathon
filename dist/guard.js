@@ -16,6 +16,6 @@
         }
     } else {
         creep.memory.attacking = 0;
-        creep.moveTo(Game.spawns.Spawn1);
+        creep.moveTo(27,24);
     }
  }
