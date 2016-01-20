@@ -1,37 +1,31 @@
-var harvester = require('harvester');
+// Module imports
+var harvesterControl = require("harvester");
+var builderControl = require("builder");
+var guardControl = require("guard");
+var spawnControl = require("spawnControl");
+var healerControl = require("healer");
+
+// Definition of spawn (hardcoded)
+var spawn = Game.spawns.Spawn1;
 
 module.exports.loop = function () {
-
+    // Handle all the creeps
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
-
         if(creep.memory.role == 'harvester') {
-            harvester(creep);
+            harvesterControl(creep,spawn);
         }
-
         if(creep.memory.role == 'builder') {
-
-            if(creep.carry.energy == 0) {
-                if(Game.spawns.Spawn1.transferEnergy(creep) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(Game.spawns.Spawn1);
-                }
-            }
-            else {
-                var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-                if(targets.length) {
-                    if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(targets[0]);
-                    }
-                }
-            }
+            builderControl(creep,spawn);
         }
         if(creep.memory.role == 'guard') {
-            var targets = creep.room.find(FIND_HOSTILE_CREEPS);
-            if(targets.length) {
-                if(creep.attack(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
-                }
-            }
+            guardControl(creep,spawn);
+        }
+        if(creep.memory.role == 'healer') {
+            healerControl(creep,spawn);
         }
     }
-}
+
+    // Determine which creep should be spawned next
+    spawnControl(spawn);
+};
